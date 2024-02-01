@@ -1,5 +1,6 @@
 package AlmosaferWeb;
 
+import static org.testng.Assert.ARRAY_MISMATCH_TEMPLATE;
 import static org.testng.Assert.assertEquals;
 
 import java.time.Duration;
@@ -7,7 +8,9 @@ import java.time.LocalDate;
 import java.util.Random;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.Select;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
@@ -136,6 +139,57 @@ public class MyTestCases extends Paramaeters {
 
 			SearchCityInput.sendKeys(CitiesInEnglish[randomEnglishCity]);
 		}
+		WebElement theList = driver.findElement(By.className("UzzIN")); 
+		
+		System.out.println(theList.findElements(By.tagName("li")).size());
+		
+		theList.findElements(By.tagName("li")).get(1).click();
+		
+	}
+	
+	@Test(priority = 9)
+	public void randomlySelectThevistorNumber() {
+		WebElement Vistors = driver.findElement(By.tagName("select")); 
+		Select selector = new Select(Vistors);
+		
+		
+		if(driver.getCurrentUrl().contains("ar")) {
+				selector.selectByVisibleText("1 غرفة، 1 بالغ، 0 أطفال");;
+
+		}else {
+			selector.selectByVisibleText("1 Room, 1 Adult, 0 Children");
+		}
+		driver.findElement(By.xpath("//*[@id=\"uncontrolled-tab-example-tabpane-hotels\"]/div/div[2]/div/div[4]/button")).click();
+		
+	}
+	
+	@Test(priority = 10)
+	
+	public void makeSurePageIsFullyLoaded() throws InterruptedException {
+		Thread.sleep(25800);
+		String SearchResult = driver.findElement(By.xpath("//*[@id=\"__next\"]/div[2]/section/span")).getText();
+		
+		if(driver.getCurrentUrl().contains("ar")) {
+			boolean Actualresult = SearchResult.contains("وجدنا") ;
+			assertEquals(Actualresult, true); 
+		}
+		
+		else {
+			boolean Actualresult = SearchResult.contains("found") ;
+			assertEquals(Actualresult, true); 
+
+		}
+	}
+	
+	@Test()
+	
+	public void sortTheItemsBasedOnThePrice() {
+		driver.findElement(By.xpath("//*[@id=\"__next\"]/div[2]/div[1]/div[2]/section[1]/div/button[2]")).click();
+		//*[@id="__next"]/div[2]/div[1]/div[2]/section[1]/div/button[2]
+		int number = driver.findElement(By.cssSelector(".sc-htpNat.KtFsv.col-9")).findElements(By.className("Price__Value")).size();
+		
+		System.out.println(number);
+		
 	}
 
 	@AfterTest
