@@ -5,7 +5,9 @@
     <classes>
       <class name="AlmosaferWeb.MyTestCases">
         <methods>
-          <include name="sortTheItemsBasedOnThePrice"/>
+          <include name="makeSurePageIsFullyLoaded"/>
+          <include name="randomlySelectThevistorNumber"/>
+          <include name="switchToHotelTab"/>
           <include name="myPostTest"/>
           <include name="mySetup"/>
         </methods>

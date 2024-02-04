@@ -5,6 +5,7 @@ import static org.testng.Assert.assertEquals;
 
 import java.time.Duration;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Random;
 
 import org.openqa.selenium.By;
@@ -14,6 +15,8 @@ import org.openqa.selenium.support.ui.Select;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
+
+import dev.failsafe.internal.util.Assert;
 
 public class MyTestCases extends Paramaeters {
 
@@ -139,57 +142,82 @@ public class MyTestCases extends Paramaeters {
 
 			SearchCityInput.sendKeys(CitiesInEnglish[randomEnglishCity]);
 		}
-		WebElement theList = driver.findElement(By.className("UzzIN")); 
-		
+		WebElement theList = driver.findElement(By.className("UzzIN"));
+
 		System.out.println(theList.findElements(By.tagName("li")).size());
-		
+
 		theList.findElements(By.tagName("li")).get(1).click();
-		
+
+		// hard assert
+		// if this test case failed i will not go to the following test cases
+
+		org.testng.Assert.assertEquals(false, true);
 	}
-	
+
 	@Test(priority = 9)
 	public void randomlySelectThevistorNumber() {
-		WebElement Vistors = driver.findElement(By.tagName("select")); 
+		WebElement Vistors = driver.findElement(By.tagName("select"));
 		Select selector = new Select(Vistors);
-		
-		
-		if(driver.getCurrentUrl().contains("ar")) {
-				selector.selectByVisibleText("1 غرفة، 1 بالغ، 0 أطفال");;
 
-		}else {
+		if (driver.getCurrentUrl().contains("ar")) {
+			selector.selectByVisibleText("1 غرفة، 1 بالغ، 0 أطفال");
+			;
+
+		} else {
 			selector.selectByVisibleText("1 Room, 1 Adult, 0 Children");
 		}
-		driver.findElement(By.xpath("//*[@id=\"uncontrolled-tab-example-tabpane-hotels\"]/div/div[2]/div/div[4]/button")).click();
-		
+		driver.findElement(
+				By.xpath("//*[@id=\"uncontrolled-tab-example-tabpane-hotels\"]/div/div[2]/div/div[4]/button")).click();
+
 	}
-	
+
 	@Test(priority = 10)
-	
+
 	public void makeSurePageIsFullyLoaded() throws InterruptedException {
 		Thread.sleep(25800);
 		String SearchResult = driver.findElement(By.xpath("//*[@id=\"__next\"]/div[2]/section/span")).getText();
-		
-		if(driver.getCurrentUrl().contains("ar")) {
-			boolean Actualresult = SearchResult.contains("وجدنا") ;
-			assertEquals(Actualresult, true); 
+
+		if (driver.getCurrentUrl().contains("ar")) {
+			boolean Actualresult = SearchResult.contains("وجدنا");
+			assertEquals(Actualresult, true);
 		}
-		
+
 		else {
-			boolean Actualresult = SearchResult.contains("found") ;
-			assertEquals(Actualresult, true); 
+			boolean Actualresult = SearchResult.contains("found");
+			assertEquals(Actualresult, true);
 
 		}
+
+		org.testng.Assert.assertEquals(false, true);
+
 	}
-	
-	@Test()
-	
-	public void sortTheItemsBasedOnThePrice() {
-		driver.findElement(By.xpath("//*[@id=\"__next\"]/div[2]/div[1]/div[2]/section[1]/div/button[2]")).click();
-		//*[@id="__next"]/div[2]/div[1]/div[2]/section[1]/div/button[2]
-		int number = driver.findElement(By.cssSelector(".sc-htpNat.KtFsv.col-9")).findElements(By.className("Price__Value")).size();
-		
-		System.out.println(number);
-		
+
+	@Test(priority = 11)
+
+	public void sortTheItemsBasedOnThePrice() throws InterruptedException {
+		Thread.sleep(5000);
+		WebElement LowestPriceButton = driver
+				.findElement(By.xpath("//*[@id=\"__next\"]/div[2]/div[1]/div[2]/section[1]/div/button[2]"));
+
+		LowestPriceButton.click();
+
+		WebElement HotelsContainer = driver.findElement(By.cssSelector(".sc-htpNat.KtFsv.col-9"));
+
+		List<WebElement> thePricesList = HotelsContainer.findElements(By.className("Price__Value"));
+
+		System.out.println(thePricesList.size() + "this is the total prices found ");
+
+		String LowestPriceOnTheList = thePricesList.get(0).getText();
+		int LowestPriceOnTheListAsNumber = Integer.parseInt(LowestPriceOnTheList);
+
+		String HighestPriceOntheList = thePricesList.get(thePricesList.size() - 1).getText();
+		int HighestPriceOntheListAsNumber = Integer.parseInt(HighestPriceOntheList);
+
+		System.out.println("this the minimum value " + LowestPriceOnTheList);
+		System.out.println("this the maximum value " + HighestPriceOntheList);
+
+		assertEquals(HighestPriceOntheListAsNumber > LowestPriceOnTheListAsNumber, true);
+
 	}
 
 	@AfterTest
